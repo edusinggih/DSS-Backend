@@ -1,2 +1,2 @@
-# DSS-Backend
-Digital Suggestion System - Flask API Backend
+# DSS Backend
+Flask API starter. See .env.example before running.
