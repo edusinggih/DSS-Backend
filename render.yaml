@@ -7,16 +7,8 @@ services:
     healthCheckPath: /api/health
     envVars:
       - key: SECRET_KEY
-        generateValue: true
-      - key: DB_HOST
         sync: false
-      - key: DB_PORT
-        value: 5432
-      - key: DB_NAME
-        value: digital_suggestion_improvment
-      - key: DB_USER
-        sync: false
-      - key: DB_PASS
+      - key: DATABASE_URL
         sync: false
       - key: FRONTEND_ORIGINS
-        sync: false
+        value: https://edusinggih.github.io
