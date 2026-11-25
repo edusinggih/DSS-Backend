@@ -1,5 +1,65 @@
-CREATE TABLE IF NOT EXISTS departments (id BIGSERIAL PRIMARY KEY, name VARCHAR(100) UNIQUE NOT NULL, code VARCHAR(30) UNIQUE NOT NULL, is_active BOOLEAN DEFAULT TRUE, created_at TIMESTAMPTZ DEFAULT NOW());
-CREATE TABLE IF NOT EXISTS users (id BIGSERIAL PRIMARY KEY, employee_id VARCHAR(50) UNIQUE NOT NULL, full_name VARCHAR(150) NOT NULL, username VARCHAR(80) UNIQUE NOT NULL, email VARCHAR(255) UNIQUE, password_hash TEXT NOT NULL, department_id BIGINT REFERENCES departments(id), role VARCHAR(20) NOT NULL DEFAULT 'EMPLOYEE' CHECK(role IN ('ADMIN','EMPLOYEE','LEADER','SUPERVISOR','MANAGER')), is_active BOOLEAN DEFAULT TRUE, created_at TIMESTAMPTZ DEFAULT NOW());
-CREATE TABLE IF NOT EXISTS ss_submissions (id BIGSERIAL PRIMARY KEY, ss_number VARCHAR(30) UNIQUE, title VARCHAR(200) NOT NULL, submitted_by BIGINT REFERENCES users(id), department_id BIGINT REFERENCES departments(id), status VARCHAR(30) DEFAULT 'DRAFT', condition_before TEXT, result_after TEXT, created_at TIMESTAMPTZ DEFAULT NOW());
-CREATE TABLE IF NOT EXISTS ss_contributors (id BIGSERIAL PRIMARY KEY, submission_id BIGINT REFERENCES ss_submissions(id) ON DELETE CASCADE, user_id BIGINT REFERENCES users(id), contribution_note TEXT, UNIQUE(submission_id,user_id));
-CREATE TABLE IF NOT EXISTS ss_approvals (id BIGSERIAL PRIMARY KEY, submission_id BIGINT REFERENCES ss_submissions(id) ON DELETE CASCADE, approval_level VARCHAR(20) CHECK(approval_level IN ('LEADER','SUPERVISOR','MANAGER')), reviewer_id BIGINT REFERENCES users(id), decision VARCHAR(20) DEFAULT 'PENDING', note TEXT, decided_at TIMESTAMPTZ, UNIQUE(submission_id,approval_level));
+CREATE TABLE IF NOT EXISTS departments (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT UNIQUE NOT NULL,
+    code TEXT UNIQUE NOT NULL,
+    is_active INTEGER DEFAULT 1,
+    created_at TEXT DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS users (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    employee_id TEXT UNIQUE NOT NULL,
+    full_name TEXT NOT NULL,
+    username TEXT UNIQUE NOT NULL,
+    email TEXT UNIQUE,
+    password_hash TEXT NOT NULL,
+    department_id INTEGER REFERENCES departments(id),
+    role TEXT NOT NULL DEFAULT 'EMPLOYEE'
+        CHECK(role IN (
+            'ADMIN',
+            'EMPLOYEE',
+            'LEADER',
+            'SUPERVISOR',
+            'MANAGER'
+        )),
+    is_active INTEGER DEFAULT 1,
+    created_at TEXT DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS ss_submissions (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    ss_number TEXT UNIQUE,
+    title TEXT NOT NULL,
+    submitted_by INTEGER REFERENCES users(id),
+    department_id INTEGER REFERENCES departments(id),
+    status TEXT DEFAULT 'DRAFT',
+    condition_before TEXT,
+    result_after TEXT,
+    created_at TEXT DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS ss_contributors (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    submission_id INTEGER REFERENCES ss_submissions(id)
+        ON DELETE CASCADE,
+    user_id INTEGER REFERENCES users(id),
+    contribution_note TEXT,
+    UNIQUE(submission_id, user_id)
+);
+
+CREATE TABLE IF NOT EXISTS ss_approvals (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    submission_id INTEGER REFERENCES ss_submissions(id)
+        ON DELETE CASCADE,
+    approval_level TEXT
+        CHECK(approval_level IN (
+            'LEADER',
+            'SUPERVISOR',
+            'MANAGER'
+        )),
+    reviewer_id INTEGER REFERENCES users(id),
+    decision TEXT DEFAULT 'PENDING',
+    note TEXT,
+    decided_at TEXT,
+    UNIQUE(submission_id, approval_level)
+);

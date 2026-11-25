@@ -1,6 +1,13 @@
 .env
 .venv/
+venv/
 __pycache__/
 *.py[cod]
+instance/
+*.sqlite3
+*.db
+*.sqlite
 uploads/*
 !uploads/.gitkeep
+.DS_Store
+.vscode/
